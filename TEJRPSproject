@@ -1,0 +1,145 @@
+'''
+This program allows users to generate multiple players to play rock paper scissors
+
+Created by Roselyn Z
+'''
+
+#import random to generate random number
+import random
+from random import randrange
+#first name pool
+firstNameP=['Bob','Ann','Leo','Mark','Linda','Chad','Ted','Ella','Robert','Ivy']
+#last name pool
+lastNameP=['Smith','Johns','Williams','Brown','Taylor','Thomas','Miller','Davis','Lee','Lam']
+#objects pool
+objects=['scissors','rock','paper']
+#a list to store contestants
+contestants=[]
+#a list to store who the winner beat
+loser=[]
+
+def nameGenerator(num):
+    '''
+    nameGenerator generated random names from first name pool and last name pool
+
+    parameter
+    --num:int
+
+    return
+    --list
+    '''
+    for i in range(1,num+1):
+        j=randrange(0,10) #generate a random number to pick from first name pool
+        k=randrange(0,10) #generate a random number to pick from last name pool
+        if([firstNameP[j],lastNameP[k]])not in contestants: #make sure there are no same names
+            contestants.append([firstNameP[j],lastNameP[k]]) #add the contestants name to the list
+    return contestants
+#end of nameGenerator
+def matchUp(contestants,length):
+    '''
+    matchUp is used to randomly pick two contestants
+
+    parameter:
+    --contestants: list
+    --length: int
+
+    return:
+    -player 1 and player 2: list
+    '''
+    randNum1=randrange(0,length) #generate a random number to get the first player
+    player1=contestants[randNum1]
+    randNum2=randrange(0,length) #generate a random number to get the second player
+    while(randNum1==randNum2): #if random number is the same, generate another random number
+        randNum2=randrange(0,length)
+    player2=contestants[randNum2]
+    return player1, player2
+#end of matchUp
+def game(player1,player2,last):
+    '''
+    game is the game function that contains the basic RPS game
+
+    parameter:
+    --player1, player2: list
+    --last: boolean
+
+    return:
+    --list
+    '''
+    randNum1=randrange(0,3) #generate a random number to assign a random object to player1
+    randNum2=randrange(0,3) #generate a random number to assign a random object to player2
+    object1=objects[randNum1]
+    object2=objects[randNum2]
+    #the game
+    if(randNum1==1):
+        if(randNum2==0):
+            loser.append(" ".join(player2)) #the loser name will be added to the loser list
+            contestants.remove(player2) #the loser will be removed from the contestants list
+            if last: #if this is the last round of the game, print how the winner won
+                print(" ".join(player1),": ",object1," "," ".join(player2),": ",object2)
+            print(" ".join(player1),'beats'," ".join(player2))
+        elif(randNum2==1):
+            print(" ".join(player1),' and '," ".join(player2), 'tie')
+            #since if the game is tie, it cannot be the last game, so no "if last" is presented here
+        elif(randNum2==2):
+            loser.append(" ".join(player1))
+            contestants.remove(player1)
+            if last:
+                    print(" ".join(player1),": ",object1," "," ".join(player2),": ",object2)
+            print(" ".join(player2),'beats'," ".join(player1))
+    elif(randNum1==0):
+        if(randNum2==2):
+            loser.append(" ".join(player2))
+            contestants.remove(player2)
+            if last:
+                    print(" ".join(player1),": ",object1," "," ".join(player2),": ",object2)
+            print(" ".join(player1),'beats'," ".join(player2))
+        elif(randNum2==0):
+            print(" ".join(player1),' and '," ".join(player2), 'tie')
+        elif(randNum2==1):
+            loser.append(" ".join(player1))
+            contestants.remove(player1)
+            if last:
+                    print(" ".join(player1),": ",object1," "," ".join(player2),": ",object2)
+            print(" ".join(player2),'beats'," ".join(player1))
+    else:
+        if(randNum2==1):
+            loser.append(" ".join(player2))
+            contestants.remove(player2)
+            if last:
+                    print(" ".join(player1),": ",object1," "," ".join(player2),": ",object2)
+            print(" ".join(player1),'beats'," ".join(player2))
+        elif(randNum2==2):
+            print(" ".join(player1),' and '," ".join(player2), 'tie')
+        elif(randNum2==0):
+            loser.append(" ".join(player1))
+            contestants.remove(player1)
+            if last:
+                    print(" ".join(player1),": ",object1," "," ".join(player2),": ",object2)
+            print(" ".join(player2),'beats'," ".join(player1))
+    return contestants
+#end of game
+
+#the main
+print("Welcome to the Rock Paper Scissors Championship!") #the welcome message
+peopleNum = int(input("How many contestants are there? [>=2] ")) #ask for the number of contestants
+contestants=nameGenerator(peopleNum) #prepare the contestants
+print(contestants)
+isReady=input("Ready to start? ") #ask user if they are ready for the game
+length=len(contestants) #the number of contestants
+player1,player2=matchUp(contestants,length) #get the player1 and player2
+last=False #since it is not the last game, last is False
+if (isReady=="y"): #if users are ready to the game
+    while(length>1):
+        if(length==2): #if the length is 2, then it means it will be the last round
+            last=True #if it is the last round, last equals to True #if the number of contestants is larger than 1, the game will run
+        contestants=game(player1,player2,last)
+        length=len(contestants)
+        if(length<2): #if there is only one contestant left, leave the loop
+            break
+        player1,player2=matchUp(contestants,length) #get the new player1 and player2
+    print(" ".join(contestants[0])," is the winner!") #print the winner to the console
+    print(" ".join(contestants[0])," beats ",", ".join(loser),"!") #print the losers
+    print("THE END!")
+else:
+    isReady=input("Ready to start? ") #if the user misstyped, it allows the user to type again
+#THE END
